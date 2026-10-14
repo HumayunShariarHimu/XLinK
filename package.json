@@ -1,15 +1,1 @@
-{
-  "name": "xlink-cybersecurity-lab",
-  "version": "1.0.0",
-  "private": true,
-  "description": "A responsive, black-and-white cybersecurity research lab with safe, local attack-flow simulations.",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
-  },
-  "devDependencies": {
-    "vite": "^6.4.1"
-  }
-}
+{"name":"xlink-cyber-range","version":"2.0.0","private":true,"type":"module","scripts":{"dev":"vite --host 0.0.0.0","build":"vite build","preview":"vite preview --host 0.0.0.0"},"devDependencies":{"vite":"^6.1.0"}}
