@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="XLinK — an interactive cybersecurity research lab for understanding suspicious links, phishing flows, redirects, and malware delivery patterns through safe simulations." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>XLinK — Link Threat Research Lab</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="wrap topbar">
+        <a href="#" class="brand" aria-label="XLinK home"><span class="brand-mark">X</span>XLinK</a>
+        <div class="status"><i class="pulse"></i>RESEARCH MODE <span class="status-divider">/</span> LOCAL SIMULATION</div>
+      </header>
+
+      <main class="wrap">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow">Cybersecurity research / 001</div>
+            <h1 id="hero-title">Understand the link.<br /><em>See the attack.</em></h1>
+            <p>An interactive, safety-first lab that demonstrates how suspicious links can lead to redirects, credential theft attempts, or malicious downloads — without contacting dangerous sites, collecting credentials, or executing malware.</p>
+            <div class="actions">
+              <a class="btn" href="#lab">OPEN LINK LAB <span aria-hidden="true">↘</span></a>
+              <a class="btn btn-ghost" href="#research">EXPLORE ATTACK PATHS</a>
+            </div>
+          </div>
+          <aside class="terminal" aria-label="Simulation status">
+            <div class="terminal-head"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span><span class="terminal-title">XLINK / SYSTEM STATUS</span></div>
+            <div class="terminal-body">
+              <div class="term-row"><span>ENGINE</span><strong>LOCAL / SANDBOXED</strong></div>
+              <div class="term-row"><span>NETWORK REQUESTS</span><strong>0 OUTBOUND</strong></div>
+              <div class="term-row"><span>MALWARE EXECUTION</span><strong>DISABLED</strong></div>
+              <div class="term-row"><span>CREDENTIAL STORAGE</span><strong>DISABLED</strong></div>
+              <div class="meter"><i id="meter-fill"></i></div>
+              <div class="terminal-status" id="terminal-status" aria-live="polite">READY — AWAITING RESEARCH INPUT</div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="section" id="research">
+          <div class="section-heading">
+            <div><div class="eyebrow">01 / Research modules</div><h2>Attack patterns, made visible.</h2></div>
+            <p>Learn the mechanism, observe each stage, and identify the signals that can help stop the attack.</p>
+          </div>
+          <div class="module-grid">
+            <article class="module-card">
+              <div class="module-number">MODULE / 01</div><div class="module-icon" aria-hidden="true">↗</div>
+              <h3>Link deception</h3>
+              <p>Compare a visible link with its real destination. Learn how lookalike domains and misleading subdomains fool people.</p>
+              <button class="text-link" data-scenario="phishing">RUN PHISHING MODEL <span>↗</span></button>
+            </article>
+            <article class="module-card">
+              <div class="module-number">MODULE / 02</div><div class="module-icon" aria-hidden="true">⌁</div>
+              <h3>Redirect chain</h3>
+              <p>Trace a simulated sequence of redirects and see where the destination changes before a user reaches a final page.</p>
+              <button class="text-link" data-scenario="redirect">TRACE REDIRECTS <span>↗</span></button>
+            </article>
+            <article class="module-card">
+              <div class="module-number">MODULE / 03</div><div class="module-icon" aria-hidden="true">▧</div>
+              <h3>Malware delivery</h3>
+              <p>Understand the path from a deceptive download prompt to a suspicious file and the protections that interrupt it.</p>
+              <button class="text-link" data-scenario="download">TRACE DELIVERY <span>↗</span></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="lab">
+          <div class="section-heading">
+            <div><div class="eyebrow">02 / Interactive instrument</div><h2>Link inspection lab.</h2></div>
+            <span class="tag">NO LIVE URL FETCHING</span>
+          </div>
+          <div class="lab-shell">
+            <div class="tabs" role="tablist" aria-label="Lab modes">
+              <button class="tab is-active" role="tab" aria-selected="true" data-tab="inspect">01 / INSPECT A URL</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="phishing">02 / PHISHING FLOW</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="redirect">03 / REDIRECT CHAIN</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="download">04 / FILE DELIVERY</button>
+            </div>
+            <div class="lab-content">
+              <div id="inspect-panel" role="tabpanel">
+                <label class="field-label" for="url-input">PASTE A URL TO INSPECT (ANALYSIS IS LOCAL)</label>
+                <div class="input-row">
+                  <input id="url-input" type="text" spellcheck="false" autocomplete="off" placeholder="https://example.com/login" aria-describedby="input-note" />
+                  <button class="btn" id="analyze-btn">ANALYZE <span aria-hidden="true">→</span></button>
+                </div>
+                <div class="notice" id="input-note">The entered string is parsed in your browser only. XLinK does not open it, resolve DNS, download files, or transmit it to a server.</div>
+                <div class="result-panel" id="url-result" aria-live="polite" hidden></div>
+              </div>
+              <div id="simulation-panel" role="tabpanel" hidden>
+                <div class="eyebrow" id="scenario-label">PHISHING SIMULATION</div>
+                <h3 class="scenario-title" id="scenario-title">A link is only the first step.</h3>
+                <p class="scenario-intro" id="scenario-intro"></p>
+                <div class="timeline" id="timeline" aria-label="Simulation progress"></div>
+                <div class="steps" id="steps"></div>
+                <div class="flow-controls">
+                  <button class="btn" id="next-step">NEXT STAGE <span aria-hidden="true">→</span></button>
+                  <button class="btn btn-ghost" id="reset-scenario">RESET SIMULATION</button>
+                </div>
+                <div class="notice defense-note" id="defense-note"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="defense">
+          <div class="section-heading">
+            <div><div class="eyebrow">03 / Defensive checklist</div><h2>Signals worth checking.</h2></div>
+            <p>These indicators are useful clues, not a guarantee that a URL is malicious or safe.</p>
+          </div>
+          <div class="module-grid">
+            <article class="module-card compact"><div class="module-number">CHECK / 01</div><h3>Destination mismatch</h3><p>Inspect the actual destination. A familiar brand name in visible text does not prove the destination is legitimate.</p></article>
+            <article class="module-card compact"><div class="module-number">CHECK / 02</div><h3>Unexpected redirects</h3><p>Unexpected domain changes, URL shorteners, and unrelated destinations deserve extra scrutiny.</p></article>
+            <article class="module-card compact"><div class="module-number">CHECK / 03</div><h3>Unexpected downloads</h3><p>Do not run unsolicited files. Verify the source and signature; use reputable endpoint protection and a managed sandbox.</p></article>
+          </div>
+        </section>
+      </main>
+      <footer class="wrap footer"><div><strong>XLinK</strong> — Cybersecurity Research Lab</div><div>EDUCATION ONLY · SIMULATED EVENTS · NO LIVE ATTACKS</div><div>BLACK / WHITE INTERFACE</div></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
