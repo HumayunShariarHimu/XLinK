@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>XLinK — Link Manipulation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;
+  --bg2:#0a0a0a;
+  --card:#111111;
+  --border:#2a2a2a;
+  --border2:#3a3a3a;
+  --text:#ffffff;
+  --text2:#e0e0e0;
+  --text3:#b0b0b0;
+  --muted:#808080;
+  --dim:#505050;
+  --pure:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text2);
+  font-family:'Noto Sans Bengali',-apple-system,'Segoe UI',sans-serif;
+  font-size:16px;
+  line-height:1.75;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ---------- HEADER ---------- */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(0,0,0,.96);
+  border-bottom:1px solid var(--border);
+  padding:10px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Share Tech Mono',monospace;
+}
+.brand-mark{
+  width:34px;height:34px;
+  border:1px solid var(--pure);
+  display:grid;place-items:center;
+  font-weight:700;color:var(--pure);font-size:15px;
+  font-family:'Share Tech Mono',monospace;
+  background:#000;
+  position:relative;
+  flex-shrink:0;
+}
+.brand-mark::before{
+  content:'';
+  position:absolute;inset:3px;
+  border:1px solid var(--dim);
+  pointer-events:none;
+}
+.brand-name{
+  font-size:18px;font-weight:700;letter-spacing:3px;
+  color:var(--pure);
+  font-family:'Share Tech Mono',monospace;
+  line-height:1.1;
+}
+.brand-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--muted);letter-spacing:2px;
+  margin-top:2px;
+}
+.menu-toggle{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--pure);
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  padding:8px 12px;
+  cursor:pointer;
+  letter-spacing:1px;
+  flex-shrink:0;
+}
+
+/* ---------- LAYOUT ---------- */
+.layout{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:calc(100vh - 55px);
+  position:relative;z-index:1;
+}
+
+/* ---------- SIDEBAR ---------- */
+aside{
+  border-right:1px solid var(--border);
+  background:#050505;
+  padding:16px 10px;
+  overflow-y:auto;
+  height:calc(100vh - 55px);
+  position:sticky;top:55px;
+}
+.sidebar-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3px;color:var(--dim);
+  text-transform:uppercase;padding:0 10px 12px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:10px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 12px;
+  cursor:pointer;
+  font-size:14px;
+  border-left:2px solid transparent;
+  transition:all .15s;
+  color:#c0c0c0;
+  font-family:'JetBrains Mono',monospace;
+}
+.nav-item:hover{background:#0d0d0d;color:var(--pure)}
+.nav-item.active{
+  background:#131313;
+  border-left-color:var(--pure);
+  color:var(--pure);
+}
+.nav-num{
+  font-size:11px;color:var(--dim);
+  min-width:24px;letter-spacing:1px;
+  font-weight:500;
+}
+.nav-item.active .nav-num{color:var(--pure)}
+
+/* ---------- MAIN ---------- */
+main{padding:22px 18px 120px;max-width:900px;width:100%}
+
+/* Progress bar */
+.progress-wrap{
+  margin-bottom:22px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1px;
+}
+.progress-top{
+  display:flex;justify-content:space-between;
+  margin-bottom:6px;
+}
+.progress-bar{
+  height:3px;background:#1a1a1a;
+  position:relative;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--pure);
+  transition:width .3s ease;
+}
+
+/* Term head */
+.term-head{margin-bottom:18px}
+.term-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--muted);letter-spacing:3px;
+}
+.term-title{
+  font-family:'Share Tech Mono',monospace;
+  font-size:24px;font-weight:700;letter-spacing:1px;
+  margin:8px 0 14px;
+  color:var(--pure);
+  line-height:1.3;
+}
+.term-desc{
+  font-size:15px;color:var(--text2);
+  padding:16px 18px;
+  background:#0a0a0a;
+  border-left:3px solid var(--pure);
+  line-height:1.8;
+}
+
+/* Warning */
+.warn-banner{
+  margin:18px 0 20px;
+  padding:13px 16px;
+  border:1px solid var(--border2);
+  background:#080808;
+  color:var(--text3);
+  font-size:13px;
+  font-family:'JetBrains Mono',monospace;
+  display:flex;gap:10px;align-items:flex-start;
+  line-height:1.7;
+}
+.warn-banner strong{color:var(--pure);font-weight:700}
+
+/* Demo card */
+.demo-card{
+  margin-top:18px;
+  background:#0a0a0a;
+  border:1px solid var(--border);
+  padding:18px;
+}
+.demo-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);letter-spacing:2px;
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.demo-label::before{
+  content:'';
+  width:6px;height:6px;background:var(--pure);
+  animation:blink 1.4s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Fake browser */
+.browser{
+  border:1px solid var(--border2);
+  background:#040404;
+  margin-bottom:16px;
+}
+.browser-top{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;
+  background:#0d0d0d;
+  border-bottom:1px solid var(--border);
+}
+.browser-dots{display:flex;gap:5px}
+.browser-dots span{
+  width:9px;height:9px;border-radius:50%;
+  background:#2a2a2a;
+}
+.browser-addr{
+  flex:1;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  padding:6px 10px;
+  background:#000;
+  border:1px solid var(--border);
+  color:var(--text3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  transition:all .3s;
+}
+.browser-addr.danger{
+  color:var(--pure);
+  border-color:var(--pure);
+  background:#151515;
+}
+.browser-body{
+  padding:22px 16px;
+  min-height:130px;
+  display:grid;place-items:center;
+  text-align:center;
+  transition:background .3s;
+}
+.browser-body.redirected{background:#0f0f0f}
+.site-fake h4{font-size:16px;margin-bottom:6px;color:var(--pure);font-weight:600}
+.site-fake p{color:var(--text3);font-size:13px;font-family:'JetBrains Mono',monospace}
+.site-hack h4{color:var(--pure);font-size:16px;margin-bottom:6px;font-weight:700;letter-spacing:1px}
+.site-hack p{color:var(--text3);font-size:13px;font-family:'JetBrains Mono',monospace}
+
+/* Buttons */
+.btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:600;letter-spacing:1.5px;
+  padding:12px 20px;
+  border:1px solid var(--pure);
+  background:transparent;
+  color:var(--pure);cursor:pointer;
+  transition:all .15s;
+  text-transform:uppercase;
+  min-height:44px;
+}
+.btn:hover,.btn:active{background:var(--pure);color:#000}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn.ghost{
+  border-color:var(--border2);
+  color:var(--text3);
+}
+.btn.ghost:hover,.btn.ghost:active{
+  border-color:var(--pure);
+  background:#111;
+  color:var(--pure);
+}
+
+/* Log */
+.log{
+  margin-top:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  padding:13px 14px;
+  background:#000;
+  border:1px solid var(--border);
+  color:var(--text3);
+  min-height:48px;
+  white-space:pre-wrap;
+  word-break:break-word;
+  line-height:1.75;
+}
+.log.warn{color:var(--text2);border-color:var(--border2)}
+.log.danger{color:var(--pure);border-color:var(--pure);background:#0f0f0f}
+
+/* Link sample */
+.link-sample{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13.5px;
+  color:var(--pure);
+  text-decoration:underline;
+  cursor:pointer;
+  display:inline-block;
+  padding:10px 14px;
+  background:#0d0d0d;
+  border:1px dashed var(--border2);
+  transition:all .15s;
+  word-break:break-all;
+  margin:6px 0;
+}
+.link-sample:hover,.link-sample:active{
+  background:#151515;
+  border-color:var(--pure);
+}
+
+/* Code */
+.code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  background:#000;
+  border:1px solid var(--border);
+  padding:14px 16px;
+  color:var(--text2);
+  overflow-x:auto;
+  line-height:1.85;
+  margin:12px 0;
+  white-space:pre;
+  -webkit-overflow-scrolling:touch;
+}
+.code .tag{color:#e0e0e0}
+.code .attr{color:#a8a8a8}
+.code .val{color:var(--pure)}
+.code .cmt{color:var(--dim);font-style:italic}
+
+/* Compare */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:12px 0;
+}
+.compare-box{
+  padding:15px 12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  text-align:center;
+  border:1px solid var(--border2);
+  background:#000;
+  word-break:break-all;
+  color:var(--text3);
+}
+.compare-box.safe{border-color:#3a3a3a;color:var(--text2)}
+.compare-box.evil{border-color:var(--pure);color:var(--pure);background:#131313}
+.compare-box small{
+  display:block;font-size:10px;letter-spacing:2px;
+  color:var(--dim);margin-bottom:8px;text-transform:uppercase;
+}
+.compare-box.evil small{color:var(--muted)}
+.hl-char{
+  background:#2a2a2a;
+  border-bottom:2px solid var(--pure);
+  padding:0 3px;
+}
+
+/* Steps */
+.steps{
+  margin-top:20px;
+  padding:16px 18px;
+  background:#0a0a0a;
+  border:1px solid var(--border);
+}
+.steps h4{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--pure);letter-spacing:2px;
+  margin-bottom:12px;text-transform:uppercase;
+}
+.steps ol{padding-left:22px;font-size:14px;color:var(--text2)}
+.steps ol li{margin-bottom:8px;line-height:1.7}
+.steps ol li b{color:var(--pure)}
+
+/* Bottom navigation (Next/Prev) */
+.bottom-nav{
+  display:flex;gap:10px;
+  margin-top:30px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.bottom-nav .btn{flex:1;min-width:130px}
+.bottom-nav .btn.next{
+  background:var(--pure);color:#000;
+}
+.bottom-nav .btn.next:hover,.bottom-nav .btn.next:active{
+  background:#ccc;color:#000;
+}
+.bottom-nav .btn.prev{
+  border-color:var(--border2);
+  color:var(--text3);
+}
+.bottom-nav .btn.prev:hover,.bottom-nav .btn.prev:active{
+  border-color:var(--pure);
+  background:#111;
+  color:var(--pure);
+}
+
+/* Animations */
+@keyframes glitch{
+  0%,100%{transform:translate(0)}
+  20%{transform:translate(-2px,1px)}
+  40%{transform:translate(2px,-1px)}
+  60%{transform:translate(-1px,-2px)}
+  80%{transform:translate(1px,2px)}
+}
+.glitch{animation:glitch .35s}
+
+/* Backdrop */
+.backdrop{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:99;
+  opacity:0;
+  transition:opacity .25s;
+}
+.backdrop.show{display:block;opacity:1}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:820px){
+  header{padding:10px 12px}
+  .brand-name{font-size:16px;letter-spacing:2px}
+  .brand-mark{width:32px;height:32px;font-size:14px}
+  .brand-sub{font-size:8px}
+
+  .layout{grid-template-columns:1fr;min-height:calc(100vh - 55px)}
+
+  aside{
+    position:fixed;
+    top:0;left:0;bottom:0;
+    width:82%;
+    max-width:320px;
+    height:100vh;
+    z-index:100;
+    transform:translateX(-100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    border-right:1px solid var(--border2);
+    padding:70px 10px 20px;
+    overflow-y:auto;
+    background:#050505;
+  }
+  aside.open{transform:translateX(0)}
+  aside::before{
+    content:'SELECT TERM';
+    position:absolute;top:24px;left:20px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:3px;
+    color:var(--muted);
+  }
+  .sidebar-title{display:none}
+  .nav-item{font-size:15px;padding:13px 14px}
+
+  main{padding:18px 14px 140px}
+  .term-title{font-size:20px;letter-spacing:.5px}
+  .term-desc{font-size:14.5px;padding:14px 16px;line-height:1.85}
+  .demo-card{padding:14px}
+  .compare{grid-template-columns:1fr;gap:8px}
+  .compare-box{font-size:13px;padding:13px 10px}
+  .code{font-size:11.5px;padding:12px 14px;line-height:1.8}
+  .btn{font-size:12px;padding:11px 16px;letter-spacing:1px;width:100%}
+  .log{font-size:12px;padding:12px}
+  .link-sample{font-size:13px;padding:10px 12px}
+  .warn-banner{font-size:12.5px;padding:12px 14px}
+  .browser-addr{font-size:11.5px}
+  .bottom-nav .btn{width:100%;flex:none}
+  .bottom-nav{flex-direction:column}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:#2a2a2a}
+::-webkit-scrollbar-thumb:hover{background:#444}
+
+/* Smooth scroll */
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">X</div>
+    <div>
+      <div class="brand-name">XLinK</div>
+      <div class="brand-sub">LINK MANIPULATION LAB</div>
+    </div>
+  </div>
+  <button class="menu-toggle" id="menuToggle">[ MENU ]</button>
+</header>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="sidebar-title">// TERMS</div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<script>
+/* =========================================================
+   XLinK — Link Manipulation Lab
+   Mobile-first, sequential learning flow.
+   ========================================================= */
+
+function browser(id, addr, bodyHtml){
+  return `
+    <div class="browser" id="${id}">
+      <div class="browser-top">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-addr" id="${id}-addr">${addr}</div>
+      </div>
+      <div class="browser-body" id="${id}-body">${bodyHtml}</div>
+    </div>`;
+}
+
+function setLog(id, text, cls){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = 'log' + (cls ? ' '+cls : '');
+  el.textContent = text;
+}
+
+const TERMS = [
+{
+id:'url-cloaking', num:'01', title:'URL Cloaking',
+desc:'ব্রাউজার বা সার্চ ইঞ্জিনকে দেখানো হয় এক ঠিকানা কিন্তু আসলে ভিতরে অন্য ঠিকানায় তথা হ্যাকিং লিংকে নিয়ে যাওয়া হয়। যেমন: লেখা "bank.com", ক্লিক করলে যায় "hacker.com" তে।',
+render(){
+  return browser('uc',
+    '[ LOCK ] https://bank.com/login',
+    `<div class="site-fake" id="uc-site">
+       <h4>Secure Bank</h4>
+       <p>Trusted banking portal — please sign in</p>
+     </div>`
+  ) + `
+    <button class="btn" data-act="uc-run">RUN DEMO</button>
+    <div class="log" id="uc-log">অ্যাড্রেস বারে এখনো bank.com দেখাচ্ছে...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="uc-run"]').onclick = () => {
+    const addr = document.getElementById('uc-addr');
+    const body = document.getElementById('uc-body');
+    const site = document.getElementById('uc-site');
+    addr.classList.add('danger');
+    body.classList.add('redirected');
+    site.outerHTML = `<div class="site-hack">
+        <h4>[ HACKER SERVER ]</h4>
+        <p>আপনার ক্রেডেনশিয়াল চুরি হয়ে গেছে</p>
+      </div>`;
+    setLog('uc-log',
+      '⚠ অ্যাড্রেস বার এখনো "bank.com" দেখাচ্ছে,\nকিন্তু ভিতরের পেজ এখন hacker.com এর।\nএটাই URL Cloaking।',
+      'danger');
+  };
+}},
+
+{
+id:'link-cloaking', num:'02', title:'Link Cloaking',
+desc:'ক্লিক করার লিংকটা এমনভাবে লুকানো থাকে যে বোঝা যায় না কোথায় নিয়ে যাবে — অর্থাৎ ড্রিবলিং করে তাতে ক্লিক করলে হ্যাকারের নিজের লিংকে ফোর্সড ডেস্টিনেটেড করবে।',
+render(){
+  return `
+    <p style="margin-bottom:14px;color:var(--text2);font-size:14.5px">নিচের লিংকটির উপর হোভার করুন — কিছুই দেখা যাবে না। ক্লিক করলে আসল গন্তব্য প্রকাশ পাবে।</p>
+    <span class="link-sample" id="lc-link">Read full article</span>
+    <div class="log" id="lc-log">Hover করলে কিছুই দেখাচ্ছে না...</div>
+  `;
+},
+init(){
+  const link = document.getElementById('lc-link');
+  link.onmouseenter = () => setLog('lc-log','Hover করলেও কোনো URL টুলটিপ দেখাচ্ছে না। ভুয়া নিরাপত্তা।','warn');
+  link.onclick = (e) => {
+    e.preventDefault();
+    link.classList.add('glitch');
+    setLog('lc-log',
+      '⚠ লিংকটি আসলে এখানে নিয়ে যেত:\nhttps://evil-malware-download.xyz/payload.exe\n\nলিংকের টেক্সটে কিছুই লেখা ছিল না, তাই আপনি বুঝতে পারেননি।',
+      'danger');
+  };
+}},
+
+{
+id:'hyperlink-spoofing', num:'03', title:'Hyperlink Spoofing',
+desc:'লিংকের উপরে যে নাম বা লেখা দেখা যায় সেটা আসলে আসল নয় বরং ভিতরে অন্য লিংক বসানো থাকে (এটিই মূল হ্যাকিং লিংক), যেমনটা লেখার শুরুতে উপরের উদাহরণে দেখানো হয়েছে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের HTML কোডটি লক্ষ্য করুন — টেক্সট বলে <b style="color:#fff">trickbd.com</b>, কিন্তু href বলে <b style="color:#fff">google.com</b>।</p>
+    <div class="code">&lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="val">"https://google.com"</span>&gt;
+  https://trickbd.com
+&lt;/<span class="tag">a</span>&gt;</div>
+    <p style="margin:8px 0 14px;color:var(--muted);font-size:13px">নিচের লিংকে ক্লিক করলে দেখুন আসলে কোথায় যায়:</p>
+    <span class="link-sample" id="hs-link">https://trickbd.com</span>
+    <div class="log" id="hs-log">অপেক্ষা করছে...</div>
+  `;
+},
+init(){
+  document.getElementById('hs-link').onclick = (e) => {
+    e.preventDefault();
+    const el = document.getElementById('hs-link');
+    el.classList.add('glitch');
+    setLog('hs-log',
+      '⚠ আপনি ভেবেছিলেন trickbd.com-এ যাচ্ছেন,\nকিন্তু লিংকটি আসলে পাঠাচ্ছে:\nhttps://google.com\n\nএটাই Hyperlink Spoofing — টেক্সট ও আসল href আলাদা।',
+      'danger');
+  };
+}},
+
+{
+id:'anchor-text-spoofing', num:'04', title:'Anchor Text Spoofing',
+desc:'হ্যাকারে ক্লিকেবল লেখাটা একরকম দেখায় কিন্তু তার ভেতরে হ্যাকিং লিংক ইনজেক্টেড থাকে।',
+render(){
+  return `
+    <p style="margin-bottom:14px;color:var(--text2);font-size:14.5px">বাটনের লেখা বলে "Download Free PDF", কিন্তু ভিতরের গন্তব্য ভিন্ন।</p>
+    <span class="link-sample" id="ats-link">Download Free PDF (2.4 MB)</span>
+    <div class="log" id="ats-log">প্রস্তুত...</div>
+  `;
+},
+init(){
+  document.getElementById('ats-link').onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('ats-link').classList.add('glitch');
+    setLog('ats-log',
+      '⚠ Anchor Text: "Download Free PDF"\nআসল href: https://phishing-login-portal.tk/steal\n\nভিক্টিম মনে করে PDF নামছে, আসলে ক্রেডেনশিয়াল পেজ খুলছে।',
+      'danger');
+  };
+}},
+
+{
+id:'url-spoofing', num:'05', title:'URL Spoofing',
+desc:'আসল লিংকের মতো দেখতে প্রায় একই রকম ভুয়া URL বানানো, যেমন: facebook.com-এর বদলে faceb00k.com ইত্যাদি।',
+render(){
+  return `
+    <p style="margin-bottom:14px;color:var(--text2);font-size:14.5px">নিচের দুইটি URL ভালো করে মিলিয়ে দেখুন — পার্থক্য খুঁজে পান?</p>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ ORIGINAL ]</small>facebook.com</div>
+      <div class="compare-box evil"><small>[ SPOOFED ]</small>faceb<span class="hl-char">0</span><span class="hl-char">0</span>k.com</div>
+    </div>
+    <p style="color:var(--text2);font-size:13.5px">"o" এর বদলে "0" (শূন্য) বসানো হয়েছে — চোখে ধরা পড়ে না, কিন্তু এটি সম্পূর্ণ ভিন্ন ডোমেইন।</p>
+    <div class="log warn">টিপ: জুম করে দেখুন — "oo" বনাম "00"</div>
+  `;
+},
+init(){}
+},
+
+{
+id:'url-obfuscation', num:'06', title:'URL Obfuscation',
+desc:'URL-কে এলোমেলো বা এনকোড বা অক্ষর বদলে এমন করা হয় যাতে মানুষ পড়ে বুঝতে না পারে এটি আসলে কোথায় যাবে — এই কনফিউশানটাকে কাজে লাগিয়ে দেখতে অর্থহীন কিন্তু ক্লিক করলে বিপদে পড়বে এমন লিংক তৈরি করা।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের এনকোডেড URL দেখে বোঝা সম্ভব? ডিকোড করে আসল গন্তব্য দেখুন।</p>
+    <div class="code" id="uo-enc">https://trusted.com/%68%74%74%70%73%3A%2F%2Fevil.com%2Fsteal</div>
+    <button class="btn" data-act="uo-dec">DECODE</button>
+    <div class="log" id="uo-log">এনকোডেড অবস্থায় পড়া অসম্ভব...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="uo-dec"]').onclick = () => {
+    document.getElementById('uo-enc').innerHTML =
+      `https://trusted.com/<span style="color:#fff;border-bottom:1px solid #fff">https://evil.com/steal</span>`;
+    setLog('uo-log',
+      '⚠ ডিকোড করার পর দেখা গেল:\nhttps://evil.com/steal\n\n%68%74%74%70%73 = "https"\n%3A = ":"    %2F = "/"\n\nএনকোডিং মানুষকে বিভ্রান্ত করার জন্যই ব্যবহার করা হয়।',
+      'danger');
+  };
+}},
+
+{
+id:'url-redirection', num:'07', title:'URL Redirection',
+desc:'এক লিংকে ক্লিক করলে সেটা স্বয়ংক্রিয়ভাবে অন্য লিংকে নিয়ে যাওয়া (জাভাস্ক্রিপ্ট টাইম বেইজ অটোম্যাটিক ফাংশান হতে পারে)।',
+render(){
+  return browser('ur',
+    '[ LOCK ] https://safe-site.com/article',
+    `<div class="site-fake" id="ur-site">
+       <h4>Safe News Site</h4>
+       <p>Loading article...</p>
+     </div>`
+  ) + `
+    <button class="btn" data-act="ur-run">RUN DEMO</button>
+    <div class="log" id="ur-log">প্রস্তুত...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="ur-run"]').onclick = () => {
+    setLog('ur-log','৩ সেকেন্ড পর স্বয়ংক্রিয়ভাবে রিডাইরেক্ট হবে...','warn');
+    let n = 3;
+    const iv = setInterval(() => {
+      if(n > 0){ setLog('ur-log',`রিডাইরেক্ট হচ্ছে... ${n}`, 'warn'); n--; }
+      else{
+        clearInterval(iv);
+        document.getElementById('ur-addr').textContent = '[ OPEN ] http://unknown-redirect.xyz/dropper';
+        document.getElementById('ur-addr').classList.add('danger');
+        document.getElementById('ur-body').classList.add('redirected');
+        document.getElementById('ur-site').outerHTML =
+          `<div class="site-hack"><h4>[ UNKNOWN SITE ]</h4><p>আপনি স্বয়ংক্রিয়ভাবে এখানে চলে এসেছেন</p></div>`;
+        setLog('ur-log','⚠ ইউজার কিছু বোঝার আগেই পেজ বদলে গেল।\nএটাই URL Redirection।','danger');
+      }
+    }, 900);
+  };
+}},
+
+{
+id:'open-redirect', num:'08', title:'Open Redirect',
+desc:'কোনো বিশ্বস্ত সাইটের রিডাইরেক্ট সুবিধা নিয়ে হ্যাকার সেটা misuse করে ভিক্টিমকে ম্যানিপুলেট করায়, যেমন: trusted.com?next=evil.com।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের URL-টি দেখতে বিশ্বস্ত সাইটের মনে হচ্ছে...</p>
+    <div class="code" id="or-url">https://trusted.com/redirect?next=https://evil.com/phish</div>
+    <button class="btn" data-act="or-run">CLICK LINK</button>
+    <div class="log" id="or-log">trusted.com ডোমেইন, তাই নিরাপদ মনে হচ্ছে...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="or-run"]').onclick = () => {
+    setLog('or-log','trusted.com আপনাকে রিডাইরেক্ট করছে...','warn');
+    setTimeout(() => {
+      setLog('or-log',
+        '⚠ trusted.com বৈধভাবে কাজ করছে,\nকিন্তু তার ?next= প্যারামিটার আপনাকে নিয়ে গেল:\nhttps://evil.com/phish\n\nএটাই Open Redirect দুর্বলতা।',
+        'danger');
+    }, 1200);
+  };
+}},
+
+{
+id:'redirect-chaining', num:'09', title:'Redirect Chaining',
+desc:'একবার নয় বরং একাধিক লিংক ধরে ধরে রিডাইরেক্ট করা এবং সবিশেষ ভিক্টিমকে টায়ার্ড করে মানসিকভাবে ডেস্টিনেটেড হ্যাকার লিংকে ক্লিক করতে বাধ্য করানো; যেমন মুভি ডাউনলোড করতে গিয়ে বারবার এড আসতে থাকলে বিরক্ত হয়ে শেষমেশ ডাউনলোড বাটনে ক্লিক করানো, যাতে ম্যালওয়্যার থাকবে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">চেইনটি ধাপে ধাপে দেখুন — প্রতিটি ধাপে ইউজার আরও বিভ্রান্ত হয়।</p>
+    <div class="code" id="rc-chain">start → ...</div>
+    <button class="btn" data-act="rc-run">RUN CHAIN</button>
+    <div class="log" id="rc-log">প্রস্তুত...</div>
+  `;
+},
+init(){
+  const hops = ['start.com','ad-network.io','tracker.promo','popup-click.biz','final-download.xyz/payload'];
+  let i = 0;
+  document.querySelector('[data-act="rc-run"]').onclick = () => {
+    i = 0;
+    const el = document.getElementById('rc-chain');
+    el.innerHTML = 'start → ';
+    setLog('rc-log','চেইন শুরু...','warn');
+    const iv = setInterval(() => {
+      if(i < hops.length){
+        const cls = (i === hops.length-1) ? 'hl-char' : '';
+        el.innerHTML += `<span class="${cls}">${hops[i]}</span>` + (i < hops.length-1 ? ' → ' : '');
+        setLog('rc-log', `ধাপ ${i+1}: ${hops[i]}`, i === hops.length-1 ? 'danger' : 'warn');
+        i++;
+      }else{
+        clearInterval(iv);
+        setLog('rc-log','⚠ ৫টি রিডাইরেক্ট শেষে ইউজার ক্লান্ত হয়ে\nশেষ বাটনে ক্লিক করে — যেটি আসলে malware dropper।','danger');
+      }
+    }, 700);
+  };
+}},
+
+{
+id:'javascript-redirect', num:'10', title:'JavaScript Redirect',
+desc:'পেজের ভিতরের JavaScript কোড চালিয়ে ফোর্সড করে ব্রাউজারকে অন্য হ্যাকারের লিংকে পাঠিয়ে দেওয়া, যাতে ইউজার কিছু বোঝার আগেই মূল পেজের পরিবর্তে হ্যাকারের পেজ রিলোড হয়।',
+render(){
+  return `
+    <div class="code">&lt;<span class="tag">script</span>&gt;
+  <span class="attr">window.location.href</span> = <span class="val">"https://evil.com/phish"</span>;
+&lt;/<span class="tag">script</span>&gt;</div>
+    <button class="btn" data-act="jr-run">EXECUTE</button>
+    <div class="log" id="jr-log">স্ক্রিপ্ট এখনো চালানো হয়নি...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="jr-run"]').onclick = () => {
+    setLog('jr-log','JS এক্সিকিউট হচ্ছে...','warn');
+    setTimeout(() => {
+      setLog('jr-log','⚠ window.location.href সেট হওয়ার সাথে সাথেই\nব্রাউজার চলে গেল: https://evil.com/phish\n\nইউজার কিছু বোঝার আগেই পেজ পাল্টে যায়।','danger');
+    }, 700);
+  };
+}},
+
+{
+id:'meta-refresh', num:'11', title:'Meta Refresh Redirect',
+desc:'HTML পেজের ভিতরে টাইমার সেট করা থাকে কয়েক সেকেন্ড পর নিজে থেকেই যেন হ্যাকারের লিংক করা পেজে চলে যায়।',
+render(){
+  return `
+    <div class="code">&lt;<span class="tag">meta</span> <span class="attr">http-equiv</span>=<span class="val">"refresh"</span>
+   <span class="attr">content</span>=<span class="val">"3; url=https://evil.com"</span>&gt;</div>
+    <button class="btn" data-act="mr-run">START TIMER</button>
+    <div class="log" id="mr-log">এখনো টাইমার শুরু হয়নি...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="mr-run"]').onclick = () => {
+    let n = 3;
+    setLog('mr-log',`${n}...`,'warn');
+    const iv = setInterval(() => {
+      n--;
+      if(n > 0){ setLog('mr-log',`${n}...`,'warn'); }
+      else{
+        clearInterval(iv);
+        setLog('mr-log','⚠ ৩ সেকেন্ড শেষ → স্বয়ংক্রিয়ভাবে রিডাইরেক্ট:\nhttps://evil.com\n\nইউজার কোনো বাটন চাপেননি, তবু পেজ পাল্টে গেল।','danger');
+      }
+    }, 1000);
+  };
+}},
+
+{
+id:'302-redirect', num:'12', title:'302 Redirect',
+desc:'সার্ভার সাময়িকভাবে বলে "এই পেজ এখন অন্য জায়গায় আছে" — এমন নোটিফাই করে হ্যাকিং লিংকে নিয়ে যাওয়া।',
+render(){
+  return `
+    <div class="code">HTTP/1.1 <span class="val">302 Found</span>
+<span class="attr">Location:</span> <span class="val">https://evil.com/fake-login</span></div>
+    <button class="btn" data-act="302-run">SEND REQUEST</button>
+    <div class="log" id="302-log">অনুরোধ পাঠানো হয়নি...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="302-run"]').onclick = () => {
+    setLog('302-log','GET /login HTTP/1.1','warn');
+    setTimeout(() => setLog('302-log','সার্ভার বলছে: 302 Found — অন্য জায়গায় যান...','warn'), 700);
+    setTimeout(() => setLog('302-log','⚠ ব্রাউজার স্বয়ংক্রিয়ভাবে Location হেডার ফলো করল:\nhttps://evil.com/fake-login\n\nএটাই 302 Redirect।','danger'), 1500);
+  };
+}},
+
+{
+id:'homograph-attack', num:'13', title:'Homograph Attack',
+desc:'দেখতে একই রকম কিন্তু আসলে আলাদা অক্ষর বা ডোমেইন ব্যবহার করে ভিক্টিমকে লিংকে ক্লিক করতে ম্যানিপুলেট করা, যেমন: ইংরেজি "a"-এর বদলে অন্য ভাষার "а" লেখা, যা ইউনিকোড ব্যবহারে আসলে ইলিউশন তৈরি করে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের দুটি ডোমেইন চোখে একই দেখাচ্ছে — কিন্তু একটি সিরিলিক অক্ষর দিয়ে বানানো।</p>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ REAL - ASCII ]</small>apple.com</div>
+      <div class="compare-box evil"><small>[ HOMOGRAPH - CYRILLIC ]</small>аpple.com</div>
+    </div>
+    <button class="btn" data-act="hg-run">HIGHLIGHT</button>
+    <div class="log" id="hg-log">চোখে পার্থক্য ধরা পড়ছে না...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="hg-run"]').onclick = () => {
+    setLog('hg-log','⚠ বাম দিকের "a" = U+0061 (Latin small a)\nডান দিকের "а" = U+0430 (Cyrillic small a)\n\nদুটি সম্পূর্ণ ভিন্ন ডোমেইন, কিন্তু চোখে অভিন্ন।','danger');
+  };
+}},
+
+{
+id:'idn-homograph', num:'14', title:'IDN Homograph',
+desc:'বিভিন্ন দেশের ভাষার অক্ষর ব্যবহার করে এমন ডোমেইন বানানো যা দেখতে আসল ডোমেইনের মতো লাগে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">বিভিন্ন ভাষার অক্ষর মিশিয়ে তৈরি ডোমেইন — দেখতে পরিচিত।</p>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ REAL ]</small>google.com</div>
+      <div class="compare-box evil"><small>[ IDN SPOOF ]</small>gооgle.com</div>
+    </div>
+    <p style="color:var(--text2);font-size:13.5px">ডান দিকের "о" দুটি আসলে সিরিলিক "о" (U+043E), ইংরেজি "o" (U+006F) নয়।</p>
+    <div class="log warn">IDN = Internationalized Domain Name। ব্রাউজার প্রায়ই এগুলোকে একই দেখায়।</div>
+  `;
+},
+init(){}
+},
+
+{
+id:'punycode', num:'15', title:'Punycode',
+desc:'ইউনিকোড ডোমেইনকে কম্পিউটারাইজ করানো — অর্থাৎ ইউনিকোড অক্ষরকে ASCII-তে রূপান্তর করা, যা হ্যাকাররা দেখতে আসল কিন্তু আসলে ভুয়া ডোমেইন বানাতে ব্যবহার করে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">ইউনিকোড ডোমেইন থেকে Punycode রূপান্তর দেখুন।</p>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ UNICODE ]</small>mаil.com</div>
+      <div class="compare-box evil"><small>[ PUNYCODE - ASCII ]</small>xn--mil-6cd.com</div>
+    </div>
+    <button class="btn" data-act="pc-run">CONVERT</button>
+    <div class="log" id="pc-log">রূপান্তর এখনো হয়নি...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="pc-run"]').onclick = () => {
+    setLog('pc-log','ইউনিকোড ডোমেইন পার্স করা হচ্ছে...','warn');
+    setTimeout(() => {
+      setLog('pc-log','⚠ ব্রাউজার ভিতরে ভিতরে এনকোড করে: xn--mil-6cd.com\n\nএই Punycode দেখতে সম্পূর্ণ ভিন্ন, কিন্তু ইউজার দেখে "mail.com" মনে করে।','danger');
+    }, 900);
+  };
+}},
+
+{
+id:'typosquatting', num:'16', title:'Typosquatting',
+desc:'মানুষের বানান ভুলের সুযোগ নিয়ে আসল সাইটের মতো নামের ডোমেইন বানানো, যেমন: google.com-এর বদলে gogle.com।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">সাধারণ টাইপো ধরে তৈরি ডোমেইনগুলো দেখুন:</p>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ REAL ]</small>google.com</div>
+      <div class="compare-box evil"><small>[ TYPO ]</small>gogle.com</div>
+    </div>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ REAL ]</small>facebook.com</div>
+      <div class="compare-box evil"><small>[ TYPO ]</small>facebok.com</div>
+    </div>
+    <div class="compare">
+      <div class="compare-box safe"><small>[ REAL ]</small>youtube.com</div>
+      <div class="compare-box evil"><small>[ TYPO ]</small>yotube.com</div>
+    </div>
+    <div class="log warn">একটি অক্ষর বাদ পড়লেই ভিন্ন সাইট। সবসময় URL কপি-পেস্ট করুন।</div>
+  `;
+},
+init(){}
+},
+
+{
+id:'address-bar-spoofing', num:'17', title:'Address Bar Spoofing',
+desc:'ব্রাউজারের অ্যাড্রেস বারে হ্যাকিং লিংক ইনজেক্ট করানো, যাতে ইউজার মনে করে সে আসল সাইটে আছে, অথচ সে ইতিমধ্যেই হ্যাকার সাইটের লিংকে আছে।',
+render(){
+  return browser('ab',
+    '[ LOCK ] https://www.paypal.com/signin',
+    `<div class="site-fake" id="ab-site">
+       <h4>Loading...</h4>
+       <p>অপেক্ষা করুন</p>
+     </div>`
+  ) + `
+    <button class="btn" data-act="ab-run">REVEAL</button>
+    <div class="log" id="ab-log">অ্যাড্রেস বার বিশ্বস্ত দেখাচ্ছে...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="ab-run"]').onclick = () => {
+    const addr = document.getElementById('ab-addr');
+    addr.textContent = 'https://paypal.com.secure-login.evil.xyz';
+    addr.classList.add('danger');
+    document.getElementById('ab-body').classList.add('redirected');
+    document.getElementById('ab-site').outerHTML =
+      `<div class="site-hack">
+        <h4>[ FAKE PAYPAL LOGIN ]</h4>
+        <p>আসল ডোমেইন: evil.xyz</p>
+      </div>`;
+    setLog('ab-log','⚠ আগে যা দেখাচ্ছিল: https://www.paypal.com/signin\nআসল URL: https://paypal.com.secure-login.evil.xyz\n\nডান দিক থেকে ডোমেইন পড়তে হয় — এখানে আসল ডোমেইন evil.xyz।','danger');
+  };
+}},
+
+{
+id:'clickjacking', num:'18', title:'Clickjacking',
+desc:'ওয়েব পেজের উপরে লেয়ার বা iframe বসিয়ে ইউজারকে এমন জায়গায় ক্লিক করানো যেটার ডেস্টিনেশন ইউজার বুঝতে পারবে না। যেমন সাধারণত জুয়ার বিজ্ঞাপনে দেখানো হয় যে "খেলুন" বাটনে ক্লিক করলে আসলে টাকা ট্রান্সফার হয়ে যাবে — এমন আরকি!',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের "PLAY NOW" বাটনে ক্লিক করুন — দেখুন আসলে কী হয়।</p>
+    <div style="position:relative;display:inline-block;margin-bottom:14px;width:100%;max-width:220px">
+      <button class="btn" id="cj-visible" style="position:relative;z-index:2;width:100%">PLAY NOW</button>
+      <button class="btn" id="cj-hidden" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:3;width:100%">TRANSFER MONEY</button>
+    </div>
+    <div class="log" id="cj-log">ইউজার শুধু "PLAY NOW" দেখছে...</div>
+    <p style="margin-top:12px;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace">(উপরের অদৃশ্য বাটনটির opacity 0 — কিন্তু ক্লিকযোগ্য)</p>
+  `;
+},
+init(){
+  document.getElementById('cj-hidden').onclick = () => {
+    setLog('cj-log','⚠ আপনি ভেবেছিলেন "PLAY NOW" চাপছেন,\nকিন্তু আসলে ক্লিক হয়েছে "TRANSFER MONEY" বাটনে।\n\nএটাই Clickjacking — অদৃশ্য লেয়ার।','danger');
+  };
+}},
+
+{
+id:'iframe-masking', num:'19', title:'Iframe Masking',
+desc:'একটি পেজের ভিতরে আরেকটি পেজ লুকিয়ে রাখা হয় — বাইরে ভুয়া পেজ দেখা যায়, ভিতরে আসল ক্ষতিকর কাজ চলে।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">নিচের পেজটি আসলে একটি iframe-এর ভিতরে লোড করা ভুয়া লগইন।</p>
+    <div style="position:relative;border:1px solid var(--border2);padding:22px 16px;background:#050505;text-align:center">
+      <div style="position:absolute;top:8px;right:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px">[ IFRAME ]</div>
+      <h4 style="margin-bottom:12px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;font-size:16px">SECURE LOGIN</h4>
+      <input type="text" placeholder="Username" style="padding:10px 12px;margin:4px;background:#000;border:1px solid var(--border2);color:var(--text);font-family:'JetBrains Mono',monospace;width:90%;max-width:260px;outline:none;font-size:14px">
+      <input type="password" placeholder="Password" style="padding:10px 12px;margin:4px;background:#000;border:1px solid var(--border2);color:var(--text);font-family:'JetBrains Mono',monospace;width:90%;max-width:260px;outline:none;font-size:14px">
+      <div><button class="btn" data-act="im-run" style="margin-top:12px;max-width:260px">SIGN IN</button></div>
+    </div>
+    <div class="log" id="im-log">বাইরের পেজ বিশ্বস্ত, ভিতরের iframe ভুয়া।</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="im-run"]').onclick = () => {
+    setLog('im-log','⚠ আপনি যা টাইপ করলেন তা সরাসরি চলে যাচ্ছে:\nhttps://attacker.example/steal\n\nবাইরের পেজ আসল, কিন্তু ভিতরের iframe হ্যাকারের।','danger');
+  };
+}},
+
+{
+id:'html-anchor-manipulation', num:'20', title:'HTML Anchor Manipulation',
+desc:'HTML লিংকের কোড বা টেক্সট বদলে দেওয়া হয়, যাতে ইউজার এক জিনিস দেখে কিন্তু ক্লিক করে অন্য জায়গায় যায়।',
+render(){
+  return `
+    <p style="margin-bottom:12px;color:var(--text2);font-size:14.5px">প্রথমে দেখুন সঠিক কোড, তারপর manipulated কোড।</p>
+    <div class="code"><span class="cmt">// সঠিক</span>
+&lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="val">"https://trusted.com"</span>&gt;Visit Trusted&lt;/<span class="tag">a</span>&gt;</div>
+    <button class="btn" data-act="ham-run">MANIPULATE</button>
+    <div class="code" id="ham-out" style="display:none"></div>
+    <div class="log" id="ham-log">প্রস্তুত...</div>
+  `;
+},
+init(){
+  document.querySelector('[data-act="ham-run"]').onclick = () => {
+    const out = document.getElementById('ham-out');
+    out.style.display = 'block';
+    out.innerHTML =
+      `<span class="cmt">// manipulated</span>
+&lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="val">"https://evil.com"</span>
+   <span class="attr">onmouseover</span>=<span class="val">"this.href='https://trusted.com'"</span>&gt;
+  Visit Trusted
+&lt;/<span class="tag">a</span>&gt;`;
+    setLog('ham-log','⚠ লিংকের টেক্সট একই, কিন্তু href সময়ের সাথে বদলে যায়।\nহোভার করলে trusted, ক্লিক করলে evil — ইউজার বুঝতেই পারে না।','danger');
+  };
+}},
+
+{
+id:'deceptive-link', num:'21', title:'Deceptive Link',
+desc:'দেখতে সাধারণ বা বিশ্বস্ত মনে হয়, কিন্তু আসলে সেটি হ্যাকিং লিংক।',
+render(){
+  return `
+    <p style="margin-bottom:14px;color:var(--text2);font-size:14.5px">নিচের লিংকটি দেখতে নিরীহ মনে হচ্ছে — কিন্তু এর গন্তব্য ভিন্ন।</p>
+    <div style="padding:16px;background:#050505;border:1px solid var(--border);text-align:center">
+      <span class="link-sample" id="dl-link" style="font-size:14px">Click here for free gift</span>
+    </div>
+    <div class="log" id="dl-log">লিংকটি বিশ্বস্ত মনে হচ্ছে...</div>
+  `;
+},
+init(){
+  document.getElementById('dl-link').onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('dl-link').classList.add('glitch');
+    setLog('dl-log','⚠ টেক্সট: "Click here for free gift"\nআসল href: https://free-gift-scam.tk/steal-credentials\n\nসাধারণ ভাষায় — এটি একটি Deceptive Link।','danger');
+  };
+}}
+];
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+const sidebar = document.getElementById('sidebar');
+const main    = document.getElementById('main');
+const menuToggle = document.getElementById('menuToggle');
+const backdrop   = document.getElementById('backdrop');
+
+/* Build sidebar */
+TERMS.forEach((t, i) => {
+  const el = document.createElement('div');
+  el.className = 'nav-item' + (i === 0 ? ' active' : '');
+  el.dataset.id = t.id;
+  el.innerHTML = `<span class="nav-num">${t.num}</span><span>${t.title}</span>`;
+  el.onclick = () => { selectTerm(t.id); closeMenu(); };
+  sidebar.appendChild(el);
+});
+
+/* Sequential navigation */
+function renderBottomNav(idx){
+  const prev = TERMS[idx-1];
+  const next = TERMS[idx+1];
+  return `
+    <div class="bottom-nav">
+      ${prev ? `<button class="btn prev" data-go="${prev.id}">&larr; ${prev.num}. ${prev.title}</button>` : ''}
+      ${next ? `<button class="btn next" data-go="${next.id}">${next.num}. ${next.title} &rarr;</button>` : '<button class="btn next" data-go="'+TERMS[0].id+'">সম্পূর্ণ শেষ &mdash; আবার শুরু করুন &rarr;</button>'}
+    </div>
+  `;
+}
+
+function selectTerm(id){
+  const idx = TERMS.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  const t = TERMS[idx];
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.id === id);
+  });
+
+  const progress = Math.round(((idx+1) / TERMS.length) * 100);
+
+  main.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span>PROGRESS: ${idx+1} / ${TERMS.length}</span>
+        <span>${progress}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+    </div>
+
+    <div class="term-head">
+      <div class="term-num">// TERM ${t.num}</div>
+      <h1 class="term-title">${t.title}</h1>
+      <div class="term-desc">${t.desc}</div>
+    </div>
+
+    <div class="warn-banner">
+      <span>[!]</span>
+      <div><strong>শিক্ষামূলক:</strong> এটি সাইবার সিকিউরিটি রিসার্চ ও সচেতনতার জন্য। বাস্তব সিস্টেমে প্রয়োগ দণ্ডনীয়।</div>
+    </div>
+
+    <div class="demo-card">
+      <div class="demo-label">LIVE DEMO / ${t.title}</div>
+      ${t.render()}
+    </div>
+
+    ${renderBottomNav(idx)}
+  `;
+
+  if(t.init) t.init();
+
+  /* Attach bottom nav listeners */
+  document.querySelectorAll('[data-go]').forEach(b => {
+    b.onclick = () => {
+      selectTerm(b.dataset.go);
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+  });
+
+  /* Ensure menu closed */
+  closeMenu();
+}
+
+function openMenu(){
+  sidebar.classList.add('open');
+  backdrop.classList.add('show');
+}
+function closeMenu(){
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+}
+
+menuToggle.onclick = () => {
+  if(sidebar.classList.contains('open')) closeMenu();
+  else openMenu();
+};
+backdrop.onclick = closeMenu;
+
+/* initial */
+selectTerm(TERMS[0].id);
+
+/* keyboard nav */
+document.addEventListener('keydown', e => {
+  const idx = TERMS.findIndex(x =>
+    document.querySelector('.nav-item.active')?.dataset.id === x.id);
+  if(e.key === 'ArrowDown' && idx < TERMS.length-1){
+    selectTerm(TERMS[idx+1].id);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  if(e.key === 'ArrowUp' && idx > 0){
+    selectTerm(TERMS[idx-1].id);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  if(e.key === 'Escape') closeMenu();
+});
+</script>
+
+</body>
+</html>
